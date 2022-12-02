@@ -1,19 +1,31 @@
-import Phaser from 'phaser'
+import Phaser from 'phaser';
+import Config from './config';
 
-import HelloWorldScene from './HelloWorldScene'
+export default class Game {
+  constructor() {
+    new Phaser.Game(Config);
+  }
 
-const config = {
-	type: Phaser.AUTO,
-	parent: 'app',
-	width: 800,
-	height: 600,
-	physics: {
-		default: 'arcade',
-		arcade: {
-			gravity: { y: 200 },
-		},
-	},
-	scene: [HelloWorldScene],
+  resize() {
+    let canvas = document.querySelector('canvas');
+  
+    let windowWidth = window.innerWidth;
+    let windowHeight = window.innerHeight;
+    let windowRatio = windowWidth / windowHeight;
+    let gameRatio = Config.width / Config.height;
+    if (windowRatio < gameRatio) {
+      canvas.style.width = windowWidth + 'px';
+      canvas.style.height = (windowWidth / gameRatio) + 'px';
+    } else {
+      canvas.style.width = (windowHeight * gameRatio) + 'px';
+      canvas.style.height = windowHeight + 'px';
+    }
+  }
 }
 
-export default new Phaser.Game(config)
+//event windows on load
+window.onload = () => {
+    const game = new Game();
+    game.resize();
+    window.addEventListener('resize', game.resize, false);
+}
